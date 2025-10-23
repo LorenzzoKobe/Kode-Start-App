@@ -14,7 +14,7 @@ dependencies:
     sdk: flutter
 
   # --- 1. Gerenciamento de Estado ---
-  # (´Arquitetura)
+  # (Arquitetura)
   provider: ^6.1.2
 
   # --- 2. Rede e APIs ---

@@ -33,11 +33,7 @@ class ContentfulService {
         title
         text1
         text2
-        img1 {
-          url
-        }
-        img2 {
-          url
+        text3
         }
       }
     }

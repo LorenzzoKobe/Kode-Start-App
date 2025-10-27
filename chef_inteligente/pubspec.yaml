@@ -21,6 +21,7 @@ dependencies:
   # (Para buscar dados externos)
   http: ^1.2.1               # Cliente HTTP para a API REST (Spoonacular)
   graphql_flutter: ^5.2.0    # Cliente GraphQL (para o Contentful)
+  hive_flutter: ^1.1.0       # Usado pelo graphql_flutter para cache local
 
   # --- 3. Banco de Dados Local ---
   # (Para salvar favoritos e cache offline)

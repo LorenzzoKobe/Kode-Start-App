@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 class AppTheme {
   // Cores da sua paleta do Figma
   // Nota: O Figma mostra um fundo FFF5E0. Para o texto principal "Smart Chef"
-  // e títulos, usaremos um marrom escuro 271500 (ou o 424242 que vc mencionou)
+  // e títulos, usaremos um marrom escuro 271500 (ou o 424242)
   static const Color primaryTextColor = Color(0xFF271500); // Marrom escuro para textos principais (Smart Chef, títulos)
   static const Color secondaryTextColor = Color(0xFF898989); // Marrom mais claro para textos secundários (timer, msg vazio)
-  static const Color scaffoldBackgroundColor = Color(0xFFFFF5E0); // Seu creme claro de fundo para todo o app
+  static const Color scaffoldBackgroundColor = Color(0xFFFFF5E0); // Creme claro de fundo para todo o app
   static const Color cardBackgroundColor = Colors.white; // Fundo dos cards brancos
   static const Color cardChipColor = Color(0xFFFFCC80); // Cor dos chips (ex: "30 min")
   static const Color cardChipTextColor = primaryTextColor; // Texto dentro do chip

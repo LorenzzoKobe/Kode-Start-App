@@ -12,12 +12,10 @@ class FavoritesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Removendo a AppBar padrão do Scaffold
-      // appBar: AppBar(...), // Removido
       
       body: Consumer<FavoriteRecipesProvider>(
         builder: (context, provider, child) {
-          return Column( // Usamos Column para ter o título acima da lista/mensagem
+          return Column( // Column para ter o título acima da lista/mensagem
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
 

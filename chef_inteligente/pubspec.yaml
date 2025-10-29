@@ -21,6 +21,7 @@ dependencies:
   # (Para buscar dados externos)
   http: ^1.2.1               # Cliente HTTP para a API REST (Spoonacular)
   graphql_flutter: ^5.2.0    # Cliente GraphQL (para o Contentful)
+  hive_flutter: ^1.1.0       # Usado pelo graphql_flutter para cache local
 
   # --- 3. Banco de Dados Local ---
   # (Para salvar favoritos e cache offline)
@@ -47,11 +48,14 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
-  # assets:
+ # assets:
   #   - images/logo.png
 
+  # Fonts removed temporarily because the font files are not present in the repository.
+  # To re-enable custom fonts, add the font files under assets/fonts/ and restore this section:
   # fonts:
   #   - family: Montserrat
   #     fonts:
-  #       - asset: fonts/Montserrat-Regular.ttf
-
+  #       - asset: assets/fonts/Montserrat-Regular.ttf
+  #       - asset: assets/fonts/Montserrat-Bold.ttf
+  #         weight: 700 # Para a versão bold da fonte

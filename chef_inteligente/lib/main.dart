@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:provider/provider.dart'; // Importe o Provider
+import 'package:provider/provider.dart'; // Importando o Provider
 
-import 'services/api_keys.dart'; // Suas chaves de API
-import 'config/app_theme.dart'; // O SEU NOVO ARQUIVO DE TEMA
+import 'services/api_keys.dart'; // Chaves de API
+import 'config/app_theme.dart'; // Arquivo de tema
 import 'providers/favorite_recipes_provider.dart'; // O provider do SQLite
-import 'screens/homeScreen.dart'; // Sua tela Home
-import 'screens/favoritesScreen.dart'; // Sua tela de Favoritos
+import 'screens/homeScreen.dart'; // Tela home
+import 'screens/favoritesScreen.dart'; // Tela Favoritos
 
 const String CONTENTFUL_SPACE_ID = ApiKeys.contentfulSpaceId;
 const String CONTENTFUL_ACCESS_TOKEN = ApiKeys.contentfulAccessToken;
@@ -33,14 +33,14 @@ void main() async {
   );
 
   runApp(
-    // 1. Iniciamos o MultiProvider para gerenciar todos os providers de estado
+    // 1. Iniciei o MultiProvider para gerenciar todos os providers de estado
     MultiProvider(
       providers: [
-        // 2. Adicionamos o Provider para Favoritos (SQLite)
+        // 2. Adicionei o Provider para Favoritos (SQLite)
         ChangeNotifierProvider(
           create: (context) => FavoriteRecipesProvider(),
         ),
-        // ... (você pode adicionar outros providers aqui)
+        // ... (Pode adicionar outros providers aqui)
       ],
       // 3. O GraphQLProvider continua envolvendo o App
       child: GraphQLProvider(
@@ -58,7 +58,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'SMART CHEF',
       debugShowCheckedModeBanner: false, // Opcional: remove o banner "Debug"
-      // 4. Usamos o tema centralizado do seu novo arquivo AppTheme
+      // 4. Usei o tema centralizado do seu novo arquivo AppTheme
       theme: AppTheme.lightTheme, 
       // 5. A 'home' agora é o widget de navegação
       home: const MyNavigationBar(),
@@ -82,8 +82,8 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
 
   // Lista das telas que a barra de navegação vai controlar
   static final List<Widget> _widgetOptions = <Widget>[
-    const HomeScreen(),       // Sua tela Home
-    const FavoritesScreen(),  // A tela de Favoritos que criamos
+    const HomeScreen(),       // tela home
+    const FavoritesScreen(),  // A tela de Favoritos
   ];
 
   void _onItemTapped(int index) {

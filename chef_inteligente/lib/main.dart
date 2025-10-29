@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'services/api_keys.dart';
+import 'screens/homeScreen.dart';
 
 const String CONTENTFUL_SPACE_ID = ApiKeys.contentfulSpaceId;
 const String CONTENTFUL_ACCESS_TOKEN = ApiKeys.contentfulAccessToken;
@@ -39,17 +40,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'SMART CHEF',
       theme: ThemeData(
-        primarySwatch: Colors.amber,
         visualDensity: VisualDensity.adaptivePlatformDensity,
+        scaffoldBackgroundColor: Color.fromARGB(255, 245, 224, 185),
       ),
 
-      home: Scaffold(
-        appBar: AppBar(title: Text('Smart Chef')),
-        body: Center(
-          child: Text('Configuração do GraphQL Concluída!'),
-        ),
-      ),
-      // home: homeScreen(),
+      home: HomeScreen(),
     );
   }
 }

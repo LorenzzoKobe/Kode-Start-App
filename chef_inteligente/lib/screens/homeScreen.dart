@@ -10,9 +10,14 @@ class HomeScreen extends StatelessWidget{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('SMART CHEF'),
+        title: Text('Smart Chef'),
+          titleTextStyle: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 30,
+          ),
+        backgroundColor: Color.fromARGB(255, 245, 224, 185),
       ),
-      body: SingleChildScrollView( // Permite rolar a tela se o conteúdo for grande
+      body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

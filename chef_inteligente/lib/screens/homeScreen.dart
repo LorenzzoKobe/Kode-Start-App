@@ -9,7 +9,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Usamos a mesma estrutura da FavoritesScreen para consistência
+      // Usei a mesma estrutura da FavoritesScreen para consistência
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -41,7 +41,7 @@ class HomeScreen extends StatelessWidget {
           // O 'Expanded' foi removido daqui de fora.
           // O 'SingleChildScrollView' também foi removido (por enquanto).
 
-          // Adicionamos um Expanded aqui para que o conteúdo (Center)
+          // Adicionei um Expanded aqui para que o conteúdo (Center)
           // preencha o restante do espaço da Column principal.
           Expanded(
             child: Center(
@@ -54,7 +54,7 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
 
-          // TODO: O seu 'FeaturedRecipeCarousel()' virá aqui no lugar do Center
+          // O 'FeaturedRecipeCarousel()' virá aqui no lugar do Center
           // ou abaixo dele.
         ],
       ),

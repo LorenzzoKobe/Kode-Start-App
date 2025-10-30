@@ -10,3 +10,14 @@ query {
   }
 }
 """;
+
+const String getFilterCategoriesQuery = """
+query {
+  filtroPorCategoriaCollection {
+    items {
+      titulo
+      termoDeBuscaApi
+    }
+  }
+}
+""";

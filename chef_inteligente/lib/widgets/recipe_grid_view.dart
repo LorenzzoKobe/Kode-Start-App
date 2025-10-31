@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import '../models/spoonacular_item_model.dart'; 
 import '../providers/all_recipes_provider.dart';
 

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../widgets/featured_recipe_carrousel.dart';
 import '../widgets/recipe_grid_view.dart';
 import '../widgets/filter_bar.dart';
+import '../widgets/search_bar_widget.dart';
 
 import 'package:provider/provider.dart';
 import '../providers/all_recipes_provider.dart';
@@ -19,8 +20,10 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-
-    Provider.of<AllRecipesProvider>(context, listen: false).fetchAllRecipes();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<AllRecipesProvider>(context, listen: false)
+      .fetchAllRecipes(filterTerm: null, search: null);
+    });
   }
 
   @override
@@ -29,6 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          SearchBarWidget(),
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Text(

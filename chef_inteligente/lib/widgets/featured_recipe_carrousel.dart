@@ -43,7 +43,7 @@ class FeaturedRecipeCarousel extends StatelessWidget {
             .toList();
 
         return Container(
-          height: 250,
+          height: 180,
           child: PageView.builder(
             itemCount: recipes.length,
             controller: PageController(viewportFraction: 0.90),
@@ -68,7 +68,7 @@ class FeaturedRecipeCarousel extends StatelessWidget {
           children: [
             
             Image.network(
-              "${recipe.imageUrl}", 
+              "${recipe.imgUrl}", 
               fit: BoxFit.cover,
 
               loadingBuilder: (context, child, loadingProgress) {
@@ -87,7 +87,7 @@ class FeaturedRecipeCarousel extends StatelessWidget {
               right: 0,
               child: Container(
                 color: Color.fromRGBO(101, 101, 101, 0.608),
-                padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+                padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
                 child: Text(
                   recipe.name,
                   style: TextStyle(

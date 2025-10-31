@@ -63,7 +63,7 @@ class _FilterBarState extends State<FilterBar> {
                     });
 
                     Provider.of<AllRecipesProvider>(context, listen: false)
-                        .fetchAllRecipes(filterTerm: newTerm);
+                        .fetchAllRecipes(filterTerm: newTerm, search: null);
                     
                   },
                 ),

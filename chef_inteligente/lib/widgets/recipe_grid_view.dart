@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../models/spoonacular_item_model.dart'; 
 import '../providers/all_recipes_provider.dart';
+
 
 class RecipeGridView extends StatelessWidget {
   const RecipeGridView({Key? key}) : super(key: key);
@@ -35,7 +37,7 @@ class RecipeGridView extends StatelessWidget {
       
       padding: EdgeInsets.all(16.0),
 
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         crossAxisSpacing: 16.0,
         mainAxisSpacing: 16.0,
@@ -51,8 +53,6 @@ class RecipeGridView extends StatelessWidget {
 
   Widget _buildGridCard(BuildContext context, SpoonacularRecipe recipe) {
 
-    debugPrint("URL da Spoonacular: ${recipe.imgUrl}");
-
     return Card(
       clipBehavior: Clip.antiAlias,
       elevation: 4.0,
@@ -60,12 +60,14 @@ class RecipeGridView extends StatelessWidget {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          
+
           Image.network(
-            "https:${recipe.imgUrl}",
+            recipe.imgUrl,
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) {
+              print('$error, stackTrace: $stackTrace');
               return Center(child: Icon(Icons.broken_image, size: 30, color: const Color.fromARGB(255, 141, 105, 39)));
+
             },
             loadingBuilder: (context, child, loadingProgress) {
                  if (loadingProgress == null) return child;

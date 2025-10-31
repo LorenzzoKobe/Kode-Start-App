@@ -2,9 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/favorite_recipes_provider.dart';
-import '../../models/receita_favorita_model.dart';
-import '../../widgets/recipe_favorite_card.dart';
-import '../../config/app_theme.dart'; // Importe para usar as cores
+  import '../../widgets/recipe_favorite_card.dart';
+import '../../config/app_theme.dart';
 
 class FavoritesScreen extends StatelessWidget {
   const FavoritesScreen({super.key});

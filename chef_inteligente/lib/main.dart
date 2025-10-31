@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
-import 'services/api_keys.dart';
 import 'config/app_theme.dart';
-import 'providers/favorite_recipes_provider.dart';
+
+import 'services/api_keys.dart';
+
 import 'screens/homeScreen.dart'; 
 import 'screens/favoritesScreen.dart';
-import 'package:provider/provider.dart';
+
+import 'providers/favorite_recipes_provider.dart';
 import 'providers/all_recipes_provider.dart';
 
 const String CONTENTFUL_SPACE_ID = ApiKeys.contentfulSpaceId;
@@ -94,6 +96,7 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
         title: Text('Smart Chef'),
         titleTextStyle: TextStyle(
           fontWeight: FontWeight.bold,
+          color: Colors.black,
           fontSize: 30,
         ),
       );

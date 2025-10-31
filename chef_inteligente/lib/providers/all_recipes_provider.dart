@@ -20,12 +20,15 @@ class AllRecipesProvider extends ChangeNotifier {
   List<SpoonacularRecipe> get recipes => _recipes;
   String get errorMessage => _errorMessage;
 
-  Future<void> fetchAllRecipes({String? filterTerm}) async {
+  Future<void> fetchAllRecipes({String? filterTerm, String? search}) async {
     try {
       _state = RecipeState.loading;
       notifyListeners();
 
-      final List<dynamic> jsonList = await _service.getPopularRecipes(filterTerm: filterTerm);
+      final List<dynamic> jsonList = await _service.getPopularRecipes(
+        filterTerm: filterTerm,
+        search: search,
+        );
 
       _recipes = jsonList
           .map((json) => SpoonacularRecipe.fromJson(json))

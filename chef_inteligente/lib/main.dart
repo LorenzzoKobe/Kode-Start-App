@@ -3,12 +3,9 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
 import 'config/app_theme.dart';
-
 import 'services/api_keys.dart';
-
 import 'screens/homeScreen.dart'; 
-import 'screens/favoritesScreen.dart';
-
+import 'screens/favoritesScreen.dart'; // Corrigido para o nome de arquivo que definimos
 import 'providers/favorite_recipes_provider.dart';
 import 'providers/all_recipes_provider.dart';
 
@@ -61,14 +58,15 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'SMART CHEF',
       debugShowCheckedModeBanner: false,
-      
       theme: AppTheme.lightTheme, 
-      
       home: const MyNavigationBar(),
     );
   }
 }
 
+// ===============================================
+// MyNavigationBar CORRIGIDA (SEM APPBAR)
+// ===============================================
 class MyNavigationBar extends StatefulWidget {
   const MyNavigationBar({super.key});
 
@@ -81,7 +79,7 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
 
   static final List<Widget> _widgetOptions = <Widget>[
     const HomeScreen(),
-    const FavoritesScreen(),
+    const FavoritesScreen(), 
   ];
 
   void _onItemTapped(int index) {
@@ -90,28 +88,13 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
     });
   }
 
-  AppBar? _buildAppBar() {
-    if (_selectedIndex == 0) {
-      return AppBar(
-        title: Text('Smart Chef'),
-        titleTextStyle: TextStyle(
-          fontWeight: FontWeight.bold,
-          color: Colors.black,
-          fontSize: 30,
-        ),
-      );
-    }
-
-    if (_selectedIndex == 1) {
-      return AppBar(title: Text('Minhas Receitas Favoritas'));
-    }
-    return null;
-  }
+  // A FUNÇÃO _buildAppBar() FOI REMOVIDA
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _buildAppBar(), 
+      
+      // A LINHA 'appBar:' FOI REMOVIDA
       
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),

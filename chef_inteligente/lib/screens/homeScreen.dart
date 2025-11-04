@@ -32,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SearchBarWidget(),
+
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Text(
@@ -66,6 +66,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
             ),
           ),
+
+          SearchBarWidget(),
 
           RecipeGridView(),
         ],

@@ -9,10 +9,9 @@ class SpoonacularService {
   static const String _apiKey = ApiKeys.spoonacularApiKey;
 
   Future<List<dynamic>> getPopularRecipes({String? filterTerm, String? search}) async {
-    String url = '$_baseUrl/complexSearch?number=10&apiKey=$_apiKey';
+    String url = '$_baseUrl/complexSearch?number=2&apiKey=$_apiKey';
 
     if (search != null && search.isNotEmpty) {
-      // Se estamos a pesquisar por ingredientes, usamos o parâmetro 'query'
       url += '&query=$search';
     } else if (filterTerm != null && filterTerm.isNotEmpty) {
         url += '&type=$filterTerm';

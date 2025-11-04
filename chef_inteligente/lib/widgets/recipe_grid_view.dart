@@ -1,8 +1,9 @@
+// lib/widgets/recipe_grid_view.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/spoonacular_item_model.dart'; 
 import '../providers/all_recipes_provider.dart';
-
+import 'recipe_card_widget.dart';
 
 class RecipeGridView extends StatelessWidget {
   const RecipeGridView({Key? key}) : super(key: key);
@@ -15,94 +16,77 @@ class RecipeGridView extends StatelessWidget {
         switch (provider.state) {
           case RecipeState.loading:
           case RecipeState.initial:
-            return Center(child: CircularProgressIndicator());
-
+            return const Center(child: CircularProgressIndicator());
           case RecipeState.error:
             return Center(child: Text("Erro ao carregar receitas: ${provider.errorMessage}"));
-
           case RecipeState.loaded:
-            return _buildRecipeGrid(provider.recipes);
+            return _buildRecipeGrid(context, provider.recipes);
         }
       },
     );
   }
 
-  Widget _buildRecipeGrid(List<SpoonacularRecipe> recipes) {
+  // --- FUNÇÃO AUXILIAR PARA "MOCKAR" OS TÍTULOS ---
+  String _getDisplayTitle(String apiTitle) {
+    if (apiTitle.contains('Peanut Butter Banana Oat Breakfast Cookies')) {
+      return 'Cookies de Aveia e Banana';
+    }
+    if (apiTitle.contains('How to Make OREO Turkeys')) {
+      return 'Perus de OREO';
+    }
+    if (apiTitle.contains('Sausage & Pepperoni Stromboli')) {
+      return 'Stromboli de Linguiça';
+    }
+    if (apiTitle.contains('Cannoli Ice Cream')) {
+      return 'Sorvete de Cannoli';
+    }
+    if (apiTitle.contains('Turkey Pot Pie')) {
+      return 'Torta de Peru';
+    }
+    if (apiTitle.contains('Slow Cooker Spicy Chicken Wings')) {
+      return 'Asinhas Picantes';
+    }
+    
+    // Se não for nenhum dos acima, retorna o original
+    return apiTitle;
+  }
+
+  Widget _buildRecipeGrid(BuildContext context, List<SpoonacularRecipe> recipes) {
     return GridView.builder(
       itemCount: recipes.length,
-      
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
-      
-      padding: EdgeInsets.all(16.0),
-
+      padding: const EdgeInsets.all(16.0),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         crossAxisSpacing: 16.0,
         mainAxisSpacing: 16.0,
         childAspectRatio: 0.8,
       ),
-      
       itemBuilder: (context, index) {
         final recipe = recipes[index];
-        return _buildGridCard(context, recipe);
-      },
-    );
-  }
 
-  Widget _buildGridCard(BuildContext context, SpoonacularRecipe recipe) {
+        // 1. USANDO A FUNÇÃO DE TÍTULO
+        final String displayTitle = _getDisplayTitle(recipe.title);
 
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      elevation: 4.0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-
-          Image.network(
-            recipe.imgUrl,
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) {
-              print('$error, stackTrace: $stackTrace');
-              return Center(child: Icon(Icons.broken_image, size: 30, color: const Color.fromARGB(255, 141, 105, 39)));
-
-            },
-            loadingBuilder: (context, child, loadingProgress) {
-                 if (loadingProgress == null) return child;
-                 return Center(child: CircularProgressIndicator());
-            }
-          ),
+        return RecipeCardWidget(
+          externalId: recipe.id.toString(),
           
-          Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Colors.black.withOpacity(0.6), Colors.transparent, Colors.black.withOpacity(0.6)],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                stops: [0.0, 0.6, 1.0],
-              ),
-            ),
-          ),
+          // 2. PASSANDO O TÍTULO CORRIGIDO
+          title: displayTitle, 
+          
+          imageUrl: recipe.imgUrl,
+          cookTime: null,
+          origem: 'Spoonacular',
+          
+          ingredientesJson: '[]', 
+          modoPreparoJson: '[]', 
 
-          Positioned(
-            bottom: 8.0,
-            left: 8.0,
-            right: 8.0,
-            child: Text(
-              recipe.title,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16.0,
-                fontWeight: FontWeight.bold,
-                shadows: [Shadow(blurRadius: 6.0, color: Colors.black.withOpacity(0.8))],
-              ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ],
-      ),
+          onTap: () {
+            // A lógica de navegação já está dentro do RecipeCardWidget
+          },
+        );
+      },
     );
   }
 }

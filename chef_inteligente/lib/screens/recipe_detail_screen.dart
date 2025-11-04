@@ -1,17 +1,11 @@
-// lib/screens/details/recipe_detail_screen.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../providers/favorite_recipes_provider.dart';
 import 'dart:convert';
-
 import '../../config/app_theme.dart';
 import '../../models/receita_favorita_model.dart';
-import '../../providers/favorite_recipes_provider.dart';
-
-// 1. IMPORTAR O SERVIÇO E O MODELO DE DETALHES
 import '../../services/spoonacular_service.dart'; 
-import '../../models/spoonacular_detail_model.dart'; 
 
-// 2. TORNAR A TELA UM STATEFULWIDGET
 class RecipeDetailScreen extends StatefulWidget {
   final String externalId;
   final String title;
@@ -37,13 +31,11 @@ class RecipeDetailScreen extends StatefulWidget {
 }
 
 class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
-  // 3. CRIAR ESTADOS PARA OS DADOS
   final SpoonacularService _service = SpoonacularService();
   
   List<String> _ingredientes = [];
   List<String> _modoPreparo = [];
   
-  // Estado de carregamento para Spoonacular
   bool _isLoadingDetails = false; 
 
   @override
@@ -53,27 +45,20 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
   }
 
   void _loadRecipeData() async {
-    // Se a origem for Contentful, os dados JSON já estão corretos (após a Correção 2).
     if (widget.origem == 'Contentful') {
       setState(() {
         _ingredientes = _parseJsonList(widget.ingredientesJson);
         _modoPreparo = _parseJsonList(widget.modoPreparoJson);
       });
     } else {
-      // Se for Spoonacular, precisamos buscar os detalhes.
       setState(() {
         _isLoadingDetails = true;
       });
       
       try {
-        // 4. CHAMADA DE API SECUNDÁRIA
         final details = await _service.getRecipeDetails(widget.externalId);
-        
-        // Atraso de 1 segundo (opcional) para vermos o loading
-        // await Future.delayed(Duration(seconds: 1)); 
 
         setState(() {
-          // Extrai os ingredientes e passos do modelo de detalhes
           _ingredientes = details.extendedIngredients
               .map((ing) => ing.original)
               .toList();
@@ -125,7 +110,6 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                         ),
                   ),
                 ),
-                // 5. ABAS QUE AGORA DEPENDEM DO ESTADO
                 _buildTabs(context, _ingredientes, _modoPreparo),
               ],
             ),
@@ -172,7 +156,6 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                     nome: widget.title,
                     imagemUrl: widget.imageUrl,
                     tempoPreparo: widget.cookTime,
-                    // 6. SALVANDO OS DADOS CORRETOS (se já tivermos)
                     ingredientesJson: jsonEncode(_ingredientes),
                     modoPreparoJson: jsonEncode(_modoPreparo),
                     origem: widget.origem,
@@ -190,7 +173,6 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
 
   Widget _buildTabs(BuildContext context, List<String> ingredientes, List<String> modoPreparo) {
     
-    // 7. LIDANDO COM O CARREGAMENTO DA SPOONACULAR
     if (_isLoadingDetails) {
       return const Center(
         child: Padding(
@@ -203,7 +185,6 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
     final bool hasIngredients = ingredientes.isNotEmpty;
     final bool hasSteps = modoPreparo.isNotEmpty;
 
-    // Se AMBOS estiverem vazios (ex: Spoonacular falhou)
     if (!hasIngredients && !hasSteps) {
        return Center(
          child: Padding(
@@ -217,7 +198,6 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
        );
     }
     
-    // O resto do código (DefaultTabController) é o mesmo...
     return DefaultTabController(
       length: 2,
       child: Column(
@@ -234,11 +214,10 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
             ],
           ),
           Container(
-            height: 400, // TODO: Melhorar para altura dinâmica
+            height: 400,
             padding: const EdgeInsets.all(16.0),
             child: TabBarView(
               children: [
-                // --- Conteúdo da Aba 1 (Ingredientes) ---
                 hasIngredients
                     ? ListView.builder(
                         itemCount: ingredientes.length,
@@ -251,7 +230,6 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                       )
                     : const Center(child: Text('Ingredientes não disponíveis.')),
                 
-                // --- Conteúdo da Aba 2 (Modo de Preparo) ---
                 hasSteps
                     ? ListView.builder(
                         itemCount: modoPreparo.length,

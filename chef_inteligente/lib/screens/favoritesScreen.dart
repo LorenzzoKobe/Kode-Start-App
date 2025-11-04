@@ -1,10 +1,6 @@
-// lib/screens/favorites/favorites_screen.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/favorite_recipes_provider.dart';
-import '../../models/receita_favorita_model.dart';
-
-// 1. IMPORTAR O NOSSO CARD PADRONIZADO
 import '../../widgets/recipe_card_widget.dart'; 
 import '../../config/app_theme.dart';
 
@@ -80,7 +76,6 @@ class FavoritesScreen extends StatelessWidget {
                           modoPreparoJson: receita.modoPreparoJson,
                           origem: receita.origem,
                           onTap: () {
-                            // TODO: Implementar navegação para detalhes da receita
                             print('Clicou na receita: ${receita.nome}');
                           },
                         );

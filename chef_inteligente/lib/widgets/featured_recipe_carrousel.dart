@@ -3,11 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import '../models/recipe_model.dart'; 
 import '../services/graphql_queries.dart';
-
-// 1. IMPORTE O NOSSO CARD PADRONIZADO
 import 'recipe_card_widget.dart';
-// 2. IMPORTE A TELA DE DETALHES (que vamos criar em breve)
-// import '../screens/details/details_screen.dart'; // TODO: Descomentar depois
 
 class FeaturedRecipeCarousel extends StatelessWidget {
   const FeaturedRecipeCarousel({Key? key}) : super(key: key);
@@ -45,25 +41,19 @@ class FeaturedRecipeCarousel extends StatelessWidget {
             itemBuilder: (context, index) {
               final recipe = recipes[index];
 
-              // 3. USANDO O NOVO RECIPECARDWIDGET
               return Container(
-                margin: const EdgeInsets.symmetric(horizontal: 4.0), // Espaço entre os cards do carrossel
+                margin: const EdgeInsets.symmetric(horizontal: 4.0),
                 child: RecipeCardWidget(
-                  externalId: recipe.contentfulId, // ID do Contentful
+                  externalId: recipe.contentfulId,
                   title: recipe.name,
                   imageUrl: recipe.imgUrl,
-                  cookTime: recipe.preparationTime, // O Contentful fornece o tempo
-                  origem: 'Contentful', // Marcamos a origem
+                  cookTime: recipe.preparationTime, 
+                  origem: 'Contentful',
 
-                  // O Contentful fornece os detalhes
-                  ingredientesJson: recipe.ingredientsJson ?? '[]',
-                  modoPreparoJson: recipe.preparationStepsJson ?? '[]',
+                  ingredientesJson: recipe.ingredientsJson,
+                  modoPreparoJson: recipe.preparationStepsJson,
 
                   onTap: () {
-                    // TODO: Ação da Tarefa 3 (Abrir Tela de Detalhes)
-                    // Navigator.push(context, MaterialPageRoute(
-                    //   builder: (context) => DetailsScreen(recipe: recipe),
-                    // ));
                     print('Clicou em: ${recipe.name}');
                   },
                 ),

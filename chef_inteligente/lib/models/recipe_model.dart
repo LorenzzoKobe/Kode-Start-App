@@ -1,6 +1,4 @@
-// lib/models/recipe_model.dart
-import 'dart:convert'; 
-import 'package:flutter/foundation.dart';
+import 'dart:convert';
 
 class FeaturedRecipe {
   final String name;
@@ -29,7 +27,7 @@ class FeaturedRecipe {
 
     // --- LÓGICA DE MOCK (Injeção de Dados) ---
     
-    String preparationTime = '0'; // Padrão
+    String preparationTime = '0';
     String ingredientsJson = '[]';
     String preparationStepsJson = '[]';
 

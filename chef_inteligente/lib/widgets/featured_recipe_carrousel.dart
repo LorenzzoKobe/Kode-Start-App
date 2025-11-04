@@ -1,12 +1,18 @@
+// lib/widgets/featured_recipe_carrousel.dart
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import '../models/recipe_model.dart'; 
 import '../services/graphql_queries.dart';
 
+// 1. IMPORTE O NOSSO CARD PADRONIZADO
+import 'recipe_card_widget.dart';
+// 2. IMPORTE A TELA DE DETALHES (que vamos criar em breve)
+// import '../screens/details/details_screen.dart'; // TODO: Descomentar depois
+
 class FeaturedRecipeCarousel extends StatelessWidget {
   const FeaturedRecipeCarousel({Key? key}) : super(key: key);
   
-@override
+  @override
   Widget build(BuildContext context) {
     return Query(
       options: QueryOptions(
@@ -15,27 +21,16 @@ class FeaturedRecipeCarousel extends StatelessWidget {
       builder: (QueryResult result, { VoidCallback? refetch, FetchMore? fetchMore }) {
         
         if (result.hasException) {
-          print(result.exception.toString());
-          return Container(
-            height: 250,
-            child: Center(child: Text("Erro ao carregar as receitas."))
-          );
+          return Container(height: 180, child: Center(child: Text("Erro ao carregar as receitas.")));
         }
-
         if (result.isLoading) {
-          return Container(
-            height: 250,
-            child: Center(child: CircularProgressIndicator()),
-          );
+          return Container(height: 180, child: Center(child: CircularProgressIndicator()));
         }
 
         final List? items = result.data?['receitaDestaqueCollection']?['items'];
 
         if (items == null || items.isEmpty) {
-          return Container(
-            height: 250,
-            child: Center(child: Text("Nenhuma receita em destaque encontrada."))
-          );
+          return Container(height: 180, child: Center(child: Text("Nenhuma receita em destaque.")));
         }
 
         final List<FeaturedRecipe> recipes = items
@@ -43,13 +38,36 @@ class FeaturedRecipeCarousel extends StatelessWidget {
             .toList();
 
         return Container(
-          height: 180,
+          height: 180, // Altura do Carrossel
           child: PageView.builder(
             itemCount: recipes.length,
             controller: PageController(viewportFraction: 0.90),
             itemBuilder: (context, index) {
               final recipe = recipes[index];
-              return _buildRecipeCard(context, recipe);
+
+              // 3. USANDO O NOVO RECIPECARDWIDGET
+              return Container(
+                margin: const EdgeInsets.symmetric(horizontal: 4.0), // Espaço entre os cards do carrossel
+                child: RecipeCardWidget(
+                  externalId: recipe.contentfulId, // ID do Contentful
+                  title: recipe.name,
+                  imageUrl: recipe.imgUrl,
+                  cookTime: recipe.preparationTime, // O Contentful fornece o tempo
+                  origem: 'Contentful', // Marcamos a origem
+
+                  // O Contentful fornece os detalhes
+                  ingredientesJson: recipe.ingredientsJson ?? '[]',
+                  modoPreparoJson: recipe.preparationStepsJson ?? '[]',
+
+                  onTap: () {
+                    // TODO: Ação da Tarefa 3 (Abrir Tela de Detalhes)
+                    // Navigator.push(context, MaterialPageRoute(
+                    //   builder: (context) => DetailsScreen(recipe: recipe),
+                    // ));
+                    print('Clicou em: ${recipe.name}');
+                  },
+                ),
+              );
             },
           ),
         );
@@ -57,53 +75,5 @@ class FeaturedRecipeCarousel extends StatelessWidget {
     );
   }
 
-  Widget _buildRecipeCard(BuildContext context, FeaturedRecipe recipe) {
-    return Container(
-      child: Card(
-        clipBehavior: Clip.antiAlias,
-        elevation: 4.0,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            
-            Image.network(
-              "${recipe.imgUrl}", 
-              fit: BoxFit.cover,
-
-              loadingBuilder: (context, child, loadingProgress) {
-                if (loadingProgress == null) return child;
-                return Center(child: CircularProgressIndicator());
-              },
-
-              errorBuilder: (context, error, stackTrace) {
-                return Center(child: Icon(Icons.broken_image, size: 40, color: Colors.grey));
-              },
-            ),
-
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: Container(
-                color: Color.fromRGBO(101, 101, 101, 0.608),
-                padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
-                child: Text(
-                  recipe.name,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 22.0,
-                    fontWeight: FontWeight.bold,
-                    shadows: [Shadow(blurRadius: 10.0, color: Colors.black.withOpacity(0.8))],
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  // 4. O MÉTODO ANTIGO _buildRecipeCard FOI REMOVIDO
 }

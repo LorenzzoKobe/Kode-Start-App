@@ -33,6 +33,7 @@ dependencies:
   # (Melhorias de performance e UI)
   cached_network_image: ^3.3.1 # Para cache de imagens de receitas
   cupertino_icons: ^1.0.8      # Ícones padrão do iOS
+  shared_preferences: ^2.2.3   # Para cache local de dados
 
 # =======================================================
 # DEPENDÊNCIAS DE DESENVOLVIMENTO

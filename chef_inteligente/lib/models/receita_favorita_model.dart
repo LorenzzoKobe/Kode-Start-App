@@ -1,15 +1,16 @@
-/// Modelo para a tabela `tb_receitas_favoritas`
+// lib/models/receita_favorita_model.dart
+import 'dart:convert';
+
 class ReceitaFavorita {
   int? id; // O ID local do SQLite (auto-incrementado)
-  String externalId; // O ID que vem da API (Contentful ou Spoonacular)
-  String origem; // "Contentful" ou "Spoonacular"
+  String externalId; // O ID que vem da API
+  String origem;
   String nome;
   String imagemUrl;
-  String? tempoPreparo; // Nullable, caso a API não forneça
-  String? calorias; // Nullable
-  String ingredientesJson; // Armazena a lista de ingredientes como uma string JSON
-  String modoPreparoJson; // Armazena os passos do preparo como uma string JSON
-  String? dataFavoritado; // O SQLite vai preencher com o timestamp
+  String? tempoPreparo;
+  String ingredientesJson;
+  String modoPreparoJson;
+  String? dataFavoritado;
 
   ReceitaFavorita({
     this.id,
@@ -18,13 +19,11 @@ class ReceitaFavorita {
     required this.nome,
     required this.imagemUrl,
     this.tempoPreparo,
-    this.calorias,
     required this.ingredientesJson,
     required this.modoPreparoJson,
     this.dataFavoritado,
   });
 
-  /// Converte um objeto Map (vindo do SQLite) para um objeto ReceitaFavorita.
   factory ReceitaFavorita.fromMap(Map<String, dynamic> map) {
     return ReceitaFavorita(
       id: map['id'] as int?,
@@ -33,23 +32,24 @@ class ReceitaFavorita {
       nome: map['nome'] as String,
       imagemUrl: map['imagem_url'] as String,
       tempoPreparo: map['tempo_preparo'] as String?,
-      calorias: map['calorias'] as String?,
       ingredientesJson: map['ingredientes_json'] as String,
       modoPreparoJson: map['modo_preparo_json'] as String,
       dataFavoritado: map['data_favoritado'] as String?,
     );
   }
 
-  /// Converte um objeto ReceitaFavorita para um Map (para salvar no SQLite).
+  // --- CORREÇÃO APLICADA AQUI ---
   Map<String, dynamic> toMap() {
+    // O campo 'id' FOI REMOVIDO daqui.
+    // O banco de dados agora gerenciará o 'id' (PRIMARY KEY) 
+    // e o 'ConflictAlgorithm.replace' usará o 'external_id' (UNIQUE)
+    // corretamente, impedindo duplicatas.
     return {
-      'id': id,
       'external_id': externalId,
       'origem': origem,
       'nome': nome,
       'imagem_url': imagemUrl,
       'tempo_preparo': tempoPreparo,
-      'calorias': calorias,
       'ingredientes_json': ingredientesJson,
       'modo_preparo_json': modoPreparoJson,
     };

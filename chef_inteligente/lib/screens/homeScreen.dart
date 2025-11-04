@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart'; 
 import 'package:provider/provider.dart';
-
 import '../widgets/featured_recipe_carrousel.dart';
 import '../widgets/recipe_grid_view.dart';
 import '../widgets/filter_bar.dart';
 import '../widgets/search_bar_widget.dart';
-
 import '../providers/all_recipes_provider.dart';
-
-import '../config/app_theme.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -21,7 +17,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    // A lógica do seu colega para buscar os dados está correta.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<AllRecipesProvider>(context, listen: false)
           .fetchAllRecipes(filterTerm: null, search: null);
@@ -50,7 +45,6 @@ class _HomeScreenState extends State<HomeScreen> {
               child: 
               Text(
                 'Receitas em Destaque',
-                // 8. CORREÇÃO: Usando o estilo direto do nosso AppTheme
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
             ),

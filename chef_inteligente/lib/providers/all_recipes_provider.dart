@@ -55,7 +55,6 @@ class AllRecipesProvider extends ChangeNotifier {
       _errorMessage = e.toString();
       _state = RecipeState.error;
     } finally {
-      // --- CORREÇÃO APLICADA AQUI ---
       // Este notifyListeners() agora é chamado DEPOIS que
       // o cache (com sucesso) OU o _fetchFromApi (com sucesso ou erro)
       // terminarem de atualizar os dados.

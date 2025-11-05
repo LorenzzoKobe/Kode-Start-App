@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../../providers/favorite_recipes_provider.dart';
 import '../../models/receita_favorita_model.dart';
 
-// 1. IMPORTAR O NOSSO CARD PADRONIZADO
+// CARD PADRONIZADO
 import '../../widgets/recipe_card_widget.dart'; 
 import '../../config/app_theme.dart';
 

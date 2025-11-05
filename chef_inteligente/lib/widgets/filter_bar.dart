@@ -4,8 +4,6 @@ import 'package:provider/provider.dart';
 import '../models/filter_category_model.dart';
 import '../services/graphql_queries.dart';
 import '../providers/all_recipes_provider.dart';
-
-// 1. IMPORTE O NOSSO TEMA
 import '../config/app_theme.dart';
 
 class FilterBar extends StatefulWidget {
@@ -59,7 +57,7 @@ class _FilterBarState extends State<FilterBar> {
                   label: Text(category.title),
                   selected: isSelected,
 
-                  // --- 2. ESTILIZAÇÃO ADICIONADA AQUI ---
+                  // --- ESTILIZAÇÃO ADICIONADA AQUI ---
 
                   // Cor do chip quando NÃO selecionado
                   backgroundColor: AppTheme.cardBackgroundColor, // Branco

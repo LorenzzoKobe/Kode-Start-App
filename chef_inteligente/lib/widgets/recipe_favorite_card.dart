@@ -82,7 +82,6 @@ class RecipeFavoriteCard extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          // Removido o tempo de preparo daqui, pois ele agora está como um chip na imagem
         ],
       ),
     );

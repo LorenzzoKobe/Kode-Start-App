@@ -66,13 +66,13 @@ class RecipeGridView extends StatelessWidget {
       itemBuilder: (context, index) {
         final recipe = recipes[index];
 
-        // 1. USANDO A FUNÇÃO DE TÍTULO
+        // USANDO A FUNÇÃO DE TÍTULO
         final String displayTitle = _getDisplayTitle(recipe.title);
 
         return RecipeCardWidget(
           externalId: recipe.id.toString(),
           
-          // 2. PASSANDO O TÍTULO CORRIGIDO
+          // PASSANDO O TÍTULO CORRIGIDO
           title: displayTitle, 
           
           imageUrl: recipe.imgUrl,

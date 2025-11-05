@@ -38,12 +38,8 @@ class ReceitaFavorita {
     );
   }
 
-  // --- CORREÇÃO APLICADA AQUI ---
+
   Map<String, dynamic> toMap() {
-    // O campo 'id' FOI REMOVIDO daqui.
-    // O banco de dados agora gerenciará o 'id' (PRIMARY KEY) 
-    // e o 'ConflictAlgorithm.replace' usará o 'external_id' (UNIQUE)
-    // corretamente, impedindo duplicatas.
     return {
       'external_id': externalId,
       'origem': origem,

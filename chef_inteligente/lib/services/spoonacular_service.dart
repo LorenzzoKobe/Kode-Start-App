@@ -2,17 +2,15 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'api_keys.dart';
-
-// 1. IMPORTAR O NOVO MODELO DE DETALHES (que criaremos a seguir)
 import '../models/spoonacular_detail_model.dart'; 
 
 class SpoonacularService {
   static const String _baseUrl = 'https://api.spoonacular.com/recipes';
 
-  // 2. LISTA DE CHAVES (com fallback)
+  // LISTA DE CHAVES (com fallback)
   static final List<String> _apiKeys = [
     ApiKeys.spoonacularApiKey,
-    ApiKeys.spoonacularApiKey_Fallback, // Assumindo que o senhor adicionou esta no ApiKeys.dart
+    ApiKeys.spoonacularApiKey_Fallback,
   ];
   int _currentKeyIndex = 0;
 
@@ -73,9 +71,7 @@ class SpoonacularService {
     }
   }
 
-  // --- 4. NOVO MÉTODO (para a Tela de Detalhes) ---
   Future<SpoonacularDetail> getRecipeDetails(String recipeId) async {
-    // Chave removida daqui
     String url = '$_baseUrl/$recipeId/information?includeNutrition=false'; 
     
     try {

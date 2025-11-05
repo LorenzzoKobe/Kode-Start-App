@@ -2,10 +2,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:cached_network_image/cached_network_image.dart';
+
 import '../config/app_theme.dart';
-import '../models/receita_favorita_model.dart'; // Precisamos disto para o provider
+import '../models/receita_favorita_model.dart'; 
 import '../providers/favorite_recipes_provider.dart';
-import '../screens/recipe_detail_screen.dart'; // Import da tela de detalhes
+import '../screens/recipe_detail_screen.dart'; 
 
 class RecipeCardWidget extends StatelessWidget {
   final String externalId; // ID (do Contentful ou Spoonacular)
@@ -66,22 +68,25 @@ class RecipeCardWidget extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // --- 1. IMAGEM COM ÍCONES ---
+                // --- IMAGEM COM ÍCONES ---
                 Expanded(
                   child: Stack(
                     fit: StackFit.expand,
                     children: [
                       // Imagem da Receita
-                      Image.network(
-                        imageUrl,
+                      CachedNetworkImage(
+                        imageUrl: imageUrl,
                         fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return const Center(child: Icon(Icons.broken_image, size: 40, color: Colors.grey));
-                        },
-                        loadingBuilder: (context, child, loadingProgress) {
-                          if (loadingProgress == null) return child;
-                          return const Center(child: CircularProgressIndicator(color: AppTheme.primaryTextColor));
-                        },
+                        // Placeholder enquanto carrega
+                        placeholder: (context, url) => Center(
+                          child: CircularProgressIndicator(
+                            color: AppTheme.primaryTextColor,
+                          ),
+                        ),
+                        // O que mostrar se falhar (offline e sem cache)
+                        errorWidget: (context, url, error) => const Center(
+                          child: Icon(Icons.broken_image, size: 40, color: Colors.grey),
+                        ),
                       ),
 
                       // Botão de Favoritar (O "Coraçãozinho")
@@ -129,7 +134,7 @@ class RecipeCardWidget extends StatelessWidget {
           if (isFavorite) {
             provider.removeFavorite(externalId);
           } else {
-            // Criamos o objeto ReceitaFavorita para salvar no banco
+            // Objeto ReceitaFavorita para salvar no banco
             final newFavorite = ReceitaFavorita(
               externalId: externalId,
               nome: title,
@@ -146,7 +151,7 @@ class RecipeCardWidget extends StatelessWidget {
     );
   }
 
-  // Widget para o Chip de Tempo
+  // Widget para o Chip de Tempo de Preparo
   Widget _buildCookTimeChip(BuildContext context, String time) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),

@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 import '../models/filter_category_model.dart';
+import '../models/filter_component_model.dart'; // 1. Importar o novo modelo
 import '../services/graphql_queries.dart';
 import '../providers/all_recipes_provider.dart';
-
-// 1. IMPORTE O NOSSO TEMA
 import '../config/app_theme.dart';
 
 class FilterBar extends StatefulWidget {
@@ -21,88 +20,96 @@ class _FilterBarState extends State<FilterBar> {
   @override
   Widget build(BuildContext context) {
     return Query(
-      options: QueryOptions(document: gql(getFilterCategoriesQuery)),
+      // 2. Usar a nova query do componente
+      options: QueryOptions(document: gql(getFilterComponentQuery)),
       builder: (QueryResult result,
           {VoidCallback? refetch, FetchMore? fetchMore}) {
         if (result.isLoading) {
           return Container(
-              height: 50, child: Center(child: CircularProgressIndicator()));
+              height: 100, child: Center(child: CircularProgressIndicator()));
         }
 
         if (result.hasException) {
+          print('### ERRO GRAPHQL FilterBar: ${result.exception.toString()}');
           return Center(child: Text("Erro ao carregar filtros."));
         }
 
-        final List? items =
-            result.data?['filtroPorCategoriaCollection']?['items'];
+        // 3. Fazer o parse do componente principal
+        final Map<String, dynamic>? item =
+            result.data?['componenteFiltrosCollection']?['items']?[0];
 
-        if (items == null || items.isEmpty) {
+        if (item == null) {
+          return Center(child: Text("Nenhum componente de filtro encontrado."));
+        }
+
+        final FilterComponent filterComponent = FilterComponent.fromJson(item);
+        final List<FilterCategory> categories = filterComponent.filters;
+
+        if (categories.isEmpty) {
           return Center(child: Text("Nenhum filtro encontrado."));
         }
 
-        final List<FilterCategory> categories =
-            items.map((item) => FilterCategory.fromJson(item)).toList();
+        // 4. Retornar uma Coluna (Título + Lista de Chips)
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // O Título vindo do Contentful
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
+              child: Text(
+                filterComponent.title,
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+            ),
 
-        return Container(
-          height: 50,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            padding: EdgeInsets.symmetric(horizontal: 16.0),
-            itemCount: categories.length,
-            itemBuilder: (context, index) {
-              final category = categories[index];
-              final bool isSelected = _selectedFilter == category.apiSearchTerm;
+            // A Lista de Chips (o seu código antigo)
+            Container(
+              height: 50,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                itemCount: categories.length,
+                itemBuilder: (context, index) {
+                  final category = categories[index];
+                  final bool isSelected = _selectedFilter == category.apiSearchTerm;
 
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                child: ChoiceChip(
-                  label: Text(category.title),
-                  selected: isSelected,
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                    child: ChoiceChip(
+                      label: Text(category.title),
+                      selected: isSelected,
+                      backgroundColor: AppTheme.cardBackgroundColor,
+                      selectedColor: AppTheme.cardChipColor,
+                      labelStyle: TextStyle(
+                        color: isSelected
+                            ? AppTheme.cardChipTextColor
+                            : AppTheme.primaryTextColor,
+                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                      ),
+                      checkmarkColor: AppTheme.cardChipTextColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                        side: BorderSide(
+                          color: isSelected
+                              ? AppTheme.cardChipColor
+                              : AppTheme.secondaryTextColor.withOpacity(0.5),
+                        ),
+                      ),
+                      onSelected: (bool selected) {
+                        final newTerm = category.apiSearchTerm;
+                        setState(() {
+                          _selectedFilter = category.apiSearchTerm;
+                        });
 
-                  // --- 2. ESTILIZAÇÃO ADICIONADA AQUI ---
-
-                  // Cor do chip quando NÃO selecionado
-                  backgroundColor: AppTheme.cardBackgroundColor, // Branco
-
-                  // Cor do chip QUANDO selecionado
-                  selectedColor: AppTheme.cardChipColor, // Cor Pêssego/Laranja
-
-                  // Cor do texto QUANDO selecionado
-                  labelStyle: TextStyle(
-                    color: isSelected
-                        ? AppTheme.cardChipTextColor // Marrom Escuro
-                        : AppTheme.primaryTextColor, // Marrom Escuro
-                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                  ),
-                  
-                  // Cor do ícone de check (o 'tick' ao lado de 'Geral')
-                  checkmarkColor: AppTheme.cardChipTextColor,
-
-                  // Estilo da borda
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                    side: BorderSide(
-                      color: isSelected
-                          ? AppTheme.cardChipColor // Borda Laranja
-                          : AppTheme.secondaryTextColor.withOpacity(0.5), // Borda cinza/marrom clara
+                        Provider.of<AllRecipesProvider>(context, listen: false)
+                            .fetchAllRecipes(filterTerm: newTerm, search: null);
+                      },
                     ),
-                  ),
-                  
-                  // --- FIM DA ESTILIZAÇÃO ---
-
-                  onSelected: (bool selected) {
-                    final newTerm = category.apiSearchTerm;
-                    setState(() {
-                      _selectedFilter = category.apiSearchTerm;
-                    });
-
-                    Provider.of<AllRecipesProvider>(context, listen: false)
-                        .fetchAllRecipes(filterTerm: newTerm, search: null);
-                  },
-                ),
-              );
-            },
-          ),
+                  );
+                },
+              ),
+            ),
+          ],
         );
       },
     );

@@ -64,9 +64,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// ===============================================
-// MyNavigationBar CORRIGIDA (SEM APPBAR)
-// ===============================================
+
 class MyNavigationBar extends StatefulWidget {
   const MyNavigationBar({super.key});
 
@@ -88,14 +86,10 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
     });
   }
 
-  // A FUNÇÃO _buildAppBar() FOI REMOVIDA
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
-      // A LINHA 'appBar:' FOI REMOVIDA
-      
+            
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),

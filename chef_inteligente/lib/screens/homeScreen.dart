@@ -31,45 +31,20 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
 
           Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(
-              'Receitas em Destaque',
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-            ),
-          ),
-
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: 
-              Text(
-                'Receitas em Destaque',
-                style: Theme.of(context).textTheme.headlineSmall,
+                padding: const EdgeInsets.only(left: 24.0, right: 16.0, top: 60.0, bottom: 8.0),
+                child: Text('SMART CHEF', style: Theme.of(context).textTheme.headlineMedium),
               ),
-            ),
 
             FeaturedRecipeCarousel(),
-
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
-              child: Text(
-                'Categorias',
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-            ),
 
             FilterBar(),
 
             Padding(
               padding: const EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 8.0),
-              child: Text(
-                'Receitas Populares',
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
+              child: Text('Receitas Populares', style: Theme.of(context).textTheme.titleLarge),
             ),
 
-             SearchBarWidget(),
+            SearchBarWidget(),
 
             RecipeGridView(),
         ],

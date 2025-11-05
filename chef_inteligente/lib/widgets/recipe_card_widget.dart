@@ -14,7 +14,6 @@ class RecipeCardWidget extends StatelessWidget {
   final String? cookTime;
   final VoidCallback onTap; // Para abrir a tela de detalhes
 
-  // Dados brutos necessários para criar um 'ReceitaFavorita'
   final String ingredientesJson;
   final String modoPreparoJson;
   final String origem; // 'Contentful' ou 'Spoonacular'
@@ -33,10 +32,8 @@ class RecipeCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Usamos o Consumer para "ouvir" o provider de favoritos
     return Consumer<FavoriteRecipesProvider>(
       builder: (context, favProvider, child) {
-        // Verificamos se esta receita já está na lista de favoritos
         final bool isFavorite = favProvider.favoriteRecipes
             .any((fav) => fav.externalId == externalId);
 
@@ -45,33 +42,15 @@ class RecipeCardWidget extends StatelessWidget {
           elevation: 4.0,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
           child: InkWell(
-            onTap: () {
-              // Navega para a tela de detalhes da receita
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => RecipeDetailScreen(
-                    externalId: externalId,
-                    title: title,
-                    imageUrl: imageUrl,
-                    cookTime: cookTime,
-                    ingredientesJson: ingredientesJson,
-                    modoPreparoJson: modoPreparoJson,
-                    origem: origem,
-                  ),
-                ),
-              );
-            }, // Adiciona o efeito de "splash" ao tocar
-          // Ação para abrir a tela de detalhes
+            onTap: onTap,
+              
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // --- 1. IMAGEM COM ÍCONES ---
                 Expanded(
                   child: Stack(
                     fit: StackFit.expand,
                     children: [
-                      // Imagem da Receita
                       Image.network(
                         imageUrl,
                         fit: BoxFit.cover,
@@ -84,14 +63,12 @@ class RecipeCardWidget extends StatelessWidget {
                         },
                       ),
 
-                      // Botão de Favoritar (O "Coraçãozinho")
                       Positioned(
                         top: 8,
                         right: 8,
                         child: _buildFavoriteButton(context, favProvider, isFavorite),
                       ),
 
-                      // Chip de Tempo de Preparo
                       if (cookTime != null)
                         Positioned(
                           bottom: 8,

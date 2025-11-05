@@ -1,69 +1,108 @@
-// lib/widgets/featured_recipe_carrousel.dart
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import '../models/recipe_model.dart'; 
+import '../models/recipe_model.dart';
+import '../models/carousel_component_model.dart';
 import '../services/graphql_queries.dart';
 import 'recipe_card_widget.dart';
+import '../screens/recipe_detail_screen.dart'; 
 
 class FeaturedRecipeCarousel extends StatelessWidget {
   const FeaturedRecipeCarousel({Key? key}) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
     return Query(
       options: QueryOptions(
-        document: gql(getFeaturedRecipesQuery),
+        document: gql(getFeaturedCarouselComponentQuery),
       ),
-      builder: (QueryResult result, { VoidCallback? refetch, FetchMore? fetchMore }) {
+      builder:
+          (QueryResult result, {VoidCallback? refetch, FetchMore? fetchMore}) {
         
         if (result.hasException) {
-          return Container(height: 180, child: Center(child: Text("Erro ao carregar as receitas.")));
+          print(result.exception.toString());
+          return Container(
+              height: 250,
+              child: Center(child: Text("Erro ao carregar o carrossel.")));
         }
         if (result.isLoading) {
-          return Container(height: 180, child: Center(child: CircularProgressIndicator()));
+          return Container(
+              height: 250, child: Center(child: CircularProgressIndicator()));
         }
 
-        final List? items = result.data?['receitaDestaqueCollection']?['items'];
+        final Map<String, dynamic>? item =
+            result.data?['componenteCarrosselCollection']?['items']?[0];
 
-        if (items == null || items.isEmpty) {
-          return Container(height: 180, child: Center(child: Text("Nenhuma receita em destaque.")));
+        if (item == null) {
+          return Container(
+              height: 250,
+              child: Center(child: Text("Nenhum carrossel encontrado.")));
         }
 
-        final List<FeaturedRecipe> recipes = items
-            .map((item) => FeaturedRecipe.fromJson(item))
-            .toList();
+        final CarouselComponent carousel = CarouselComponent.fromJson(item);
+        final List<FeaturedRecipe> recipes = carousel.recipes;
 
-        return Container(
-          height: 180, // Altura do Carrossel
-          child: PageView.builder(
-            itemCount: recipes.length,
-            controller: PageController(viewportFraction: 0.90),
-            itemBuilder: (context, index) {
-              final recipe = recipes[index];
+        if (recipes.isEmpty) {
+          return Center(child: Text("Carrossel vazio."));
+        }
 
-              return Container(
-                margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                child: RecipeCardWidget(
-                  externalId: recipe.contentfulId,
-                  title: recipe.name,
-                  imageUrl: recipe.imgUrl,
-                  cookTime: recipe.preparationTime, 
-                  origem: 'Contentful',
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                carousel.title,
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
+            ),
 
-                  ingredientesJson: recipe.ingredientsJson,
-                  modoPreparoJson: recipe.preparationStepsJson,
+            Container(
+              height: 180,
+              child: PageView.builder(
+                itemCount: recipes.length,
+                controller: PageController(viewportFraction: 0.90),
+                
+                itemBuilder: (context, index) {
+                  final recipe = recipes[index];
 
-                  onTap: () {
-                    print('Clicou em: ${recipe.name}');
-                  },
-                ),
-              );
-            },
-          ),
+                  return Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                    child: RecipeCardWidget(
+                      externalId: recipe.contentfulId,
+                      title: recipe.name,
+                      imageUrl: recipe.imgUrl,
+                      cookTime: recipe.preparationTime,
+                      origem: 'Contentful',
+
+                      ingredientesJson: recipe.ingredientsJson,
+                      modoPreparoJson: recipe.preparationStepsJson,
+
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RecipeDetailScreen(
+                              externalId: recipe.contentfulId,
+                              title: recipe.name,
+                              imageUrl: recipe.imgUrl,
+                              cookTime: recipe.preparationTime,
+                              ingredientesJson: recipe.ingredientsJson,
+                              modoPreparoJson: recipe.preparationStepsJson,
+                              origem: 'Contentful',
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
         );
       },
     );
   }
-
-  // 4. O MÉTODO ANTIGO _buildRecipeCard FOI REMOVIDO
 }

@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../models/spoonacular_item_model.dart'; 
 import '../providers/all_recipes_provider.dart';
 import 'recipe_card_widget.dart';
+import '../screens/recipe_detail_screen.dart';
 
 class RecipeGridView extends StatelessWidget {
   const RecipeGridView({Key? key}) : super(key: key);
@@ -83,7 +84,20 @@ class RecipeGridView extends StatelessWidget {
           modoPreparoJson: '[]', 
 
           onTap: () {
-            // A lógica de navegação já está dentro do RecipeCardWidget
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => RecipeDetailScreen(
+                  externalId: recipe.id.toString(),
+                  title: displayTitle,
+                  imageUrl: recipe.imgUrl,
+                  cookTime: null,
+                  ingredientesJson: '[]',
+                  modoPreparoJson: '[]',
+                  origem: 'Spoonacular',
+                ),
+              ),
+            );
           },
         );
       },

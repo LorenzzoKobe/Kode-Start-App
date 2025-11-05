@@ -1,26 +1,4 @@
-// lib/services/graphql_queries.dart
-
-const String getFeaturedRecipesQuery = """
-query {
-  receitaDestaqueCollection {
-    items {
-      # Mantemos apenas os campos que TEMOS CERTEZA que existem
-      sys {
-        id 
-      }
-      nomeDaReceita
-      imagemDaReceita {
-        url
-      }
-      
-      # Os campos errados (que eu adivinhei) foram removidos 
-      # para parar o 'Erro ao carregar as receitas.'
-    }
-  }
-}
-""";
-
-const String getFilterCategoriesQuery = """
+const String getFilterCategoryQuery = """
 query {
   filtroPorCategoriaCollection {
     items {
@@ -29,4 +7,42 @@ query {
     }
   }
 }
+""";
+
+const String getFilterComponentQuery = """
+query {
+  componenteFiltrosCollection(limit: 1) {
+    items {
+      titulo
+            filtroCollection(limit: 10) { 
+        items {
+          ... on FiltroPorCategoria { 
+            titulo
+            termoDeBuscaApi
+          }
+        }
+      }
+    }
+  }
+}
+""";
+
+const String getFeaturedCarouselComponentQuery = """
+query {
+  componenteCarrosselCollection(limit: 1) {
+    items {
+      titulo
+      receitasCollection(limit: 10) {
+        items {
+          ... on ReceitaDestaque { 
+            nomeDaReceita
+            imagemDaReceita {
+              url
+            }
+          }
+        }
+      }
+    }
+  }
+} 
 """;

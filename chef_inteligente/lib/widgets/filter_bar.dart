@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 import '../models/filter_category_model.dart';
-import '../models/filter_component_model.dart'; // 1. Importar o novo modelo
+import '../models/filter_component_model.dart';
 import '../services/graphql_queries.dart';
 import '../providers/all_recipes_provider.dart';
 import '../config/app_theme.dart';
@@ -20,7 +20,6 @@ class _FilterBarState extends State<FilterBar> {
   @override
   Widget build(BuildContext context) {
     return Query(
-      // 2. Usar a nova query do componente
       options: QueryOptions(document: gql(getFilterComponentQuery)),
       builder: (QueryResult result,
           {VoidCallback? refetch, FetchMore? fetchMore}) {
@@ -34,7 +33,6 @@ class _FilterBarState extends State<FilterBar> {
           return Center(child: Text("Erro ao carregar filtros."));
         }
 
-        // 3. Fazer o parse do componente principal
         final Map<String, dynamic>? item =
             result.data?['componenteFiltrosCollection']?['items']?[0];
 
@@ -49,11 +47,9 @@ class _FilterBarState extends State<FilterBar> {
           return Center(child: Text("Nenhum filtro encontrado."));
         }
 
-        // 4. Retornar uma Coluna (Título + Lista de Chips)
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // O Título vindo do Contentful
             Padding(
               padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
               child: Text(
@@ -62,7 +58,6 @@ class _FilterBarState extends State<FilterBar> {
               ),
             ),
 
-            // A Lista de Chips (o seu código antigo)
             Container(
               height: 50,
               child: ListView.builder(

@@ -1,14 +1,3 @@
-const String getFilterCategoryQuery = """
-query {
-  filtroPorCategoriaCollection {
-    items {
-      titulo
-      termoDeBuscaApi
-    }
-  }
-}
-""";
-
 const String getFilterComponentQuery = """
 query {
   componenteFiltrosCollection(limit: 1) {
@@ -35,10 +24,16 @@ query {
       receitasCollection(limit: 10) {
         items {
           ... on ReceitaDestaque { 
+            sys {
+              id
+            }
             nomeDaReceita
             imagemDaReceita {
               url
             }
+            tempoDePreparo
+            ingredientes
+            modoDePreparo
           }
         }
       }

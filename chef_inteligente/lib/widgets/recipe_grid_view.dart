@@ -27,30 +27,6 @@ class RecipeGridView extends StatelessWidget {
     );
   }
 
-  // --- FUNÇÃO AUXILIAR PARA "MOCKAR" OS TÍTULOS ---
-  String _getDisplayTitle(String apiTitle) {
-    if (apiTitle.contains('Peanut Butter Banana Oat Breakfast Cookies')) {
-      return 'Cookies de Aveia e Banana';
-    }
-    if (apiTitle.contains('How to Make OREO Turkeys')) {
-      return 'Perus de OREO';
-    }
-    if (apiTitle.contains('Sausage & Pepperoni Stromboli')) {
-      return 'Stromboli de Linguiça';
-    }
-    if (apiTitle.contains('Cannoli Ice Cream')) {
-      return 'Sorvete de Cannoli';
-    }
-    if (apiTitle.contains('Turkey Pot Pie')) {
-      return 'Torta de Peru';
-    }
-    if (apiTitle.contains('Slow Cooker Spicy Chicken Wings')) {
-      return 'Asinhas Picantes';
-    }
-    
-    // Se não for nenhum dos acima, retorna o original
-    return apiTitle;
-  }
 
   Widget _buildRecipeGrid(BuildContext context, List<SpoonacularRecipe> recipes) {
     return GridView.builder(
@@ -67,13 +43,11 @@ class RecipeGridView extends StatelessWidget {
       itemBuilder: (context, index) {
         final recipe = recipes[index];
 
-        // 1. USANDO A FUNÇÃO DE TÍTULO
-        final String displayTitle = _getDisplayTitle(recipe.title);
+        final String displayTitle = recipe.title;
 
         return RecipeCardWidget(
           externalId: recipe.id.toString(),
           
-          // 2. PASSANDO O TÍTULO CORRIGIDO
           title: displayTitle, 
           
           imageUrl: recipe.imgUrl,

@@ -39,8 +39,7 @@ class SpoonacularService {
   }
 
   Future<SpoonacularDetail> getRecipeDetails(String recipeId) async {
-    String url = '$_baseUrl/$recipeId/information?includeNutrition=false'; 
-    
+    String url = '$_baseUrl/$recipeId/information?includeNutrition=false&apiKey=$_apiKey';    
     try {
       final response = await http.get(Uri.parse(url));
 

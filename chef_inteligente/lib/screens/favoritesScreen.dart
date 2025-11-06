@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../providers/favorite_recipes_provider.dart';
 import '../../widgets/recipe_card_widget.dart'; 
 import '../../config/app_theme.dart';
+import '../screens/recipe_detail_screen.dart';
 
 class FavoritesScreen extends StatelessWidget {
   const FavoritesScreen({super.key});
@@ -15,7 +16,7 @@ class FavoritesScreen extends StatelessWidget {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // --- CABEÇALHO PADRONIZADO ---
+
               Padding(
                 padding: const EdgeInsets.only(left: 24.0, right: 16.0, top: 60.0, bottom: 8.0),
                 child: Text('SMART CHEF', style: Theme.of(context).textTheme.headlineMedium),
@@ -25,7 +26,6 @@ class FavoritesScreen extends StatelessWidget {
                 child: Text('Suas Receitas Favoritas!', style: Theme.of(context).textTheme.headlineSmall),
               ),
 
-              // --- CORPO DA TELA ---
               Expanded(
                 child: Builder(
                   builder: (context) {
@@ -36,7 +36,6 @@ class FavoritesScreen extends StatelessWidget {
                       return Center(child: Text('Ocorreu um erro: ${provider.errorMessage}'));
                     }
                     
-                    // 2. VERIFICAR SE A LISTA ESTÁ VAZIA
                     if (provider.favoriteRecipes.isEmpty) {
                       return Center(
                         child: Padding(
@@ -52,7 +51,6 @@ class FavoritesScreen extends StatelessWidget {
                       );
                     }
 
-                    // 3. CONSTRUIR O GRID COM O CARD CORRETO
                     final recipes = provider.favoriteRecipes;
                     return GridView.builder(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0),
@@ -66,7 +64,6 @@ class FavoritesScreen extends StatelessWidget {
                       itemBuilder: (context, index) {
                         final receita = recipes[index];
                         
-                        // 4. USANDO O RecipeCardWidget PADRONIZADO
                         return RecipeCardWidget(
                           externalId: receita.externalId,
                           title: receita.nome,
@@ -76,7 +73,21 @@ class FavoritesScreen extends StatelessWidget {
                           modoPreparoJson: receita.modoPreparoJson,
                           origem: receita.origem,
                           onTap: () {
-                            print('Clicou na receita: ${receita.nome}');
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => RecipeDetailScreen(
+                                  externalId: receita.externalId,
+                                  title: receita.nome,
+                                  imageUrl: receita.imagemUrl,
+                                  cookTime: receita.tempoPreparo,
+                                  // Passando os dados salvos do banco:
+                                  ingredientesJson: receita.ingredientesJson,
+                                  modoPreparoJson: receita.modoPreparoJson,
+                                  origem: receita.origem,
+                                ),
+                              ),
+                            );
                           },
                         );
                       },

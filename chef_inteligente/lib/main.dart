@@ -63,7 +63,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-
 class MyNavigationBar extends StatefulWidget {
   const MyNavigationBar({super.key});
 
@@ -88,7 +87,7 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-            
+
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),

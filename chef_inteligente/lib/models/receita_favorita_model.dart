@@ -39,7 +39,6 @@ class ReceitaFavorita {
 
 
   Map<String, dynamic> toMap() {
-
     return {
       'external_id': externalId,
       'origem': origem,

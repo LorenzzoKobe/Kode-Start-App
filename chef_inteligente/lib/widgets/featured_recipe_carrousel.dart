@@ -4,7 +4,7 @@ import '../models/recipe_model.dart';
 import '../models/carousel_component_model.dart';
 import '../services/graphql_queries.dart';
 import 'recipe_card_widget.dart';
-import '../screens/recipe_detail_screen.dart'; 
+import '../screens/recipe_detail_screen.dart';
 
 class FeaturedRecipeCarousel extends StatelessWidget {
   const FeaturedRecipeCarousel({Key? key}) : super(key: key);

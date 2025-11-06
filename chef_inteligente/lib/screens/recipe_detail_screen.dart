@@ -48,6 +48,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
   }
 
   void _loadRecipeData() async {
+    // 1. Se for Contentful (Lasanha), apenas exibe os dados mockados
     if (widget.origem == 'Contentful') {
       setState(() {
         _ingredientes = _parseJsonList(widget.ingredientesJson);
@@ -56,10 +57,12 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
       return;
     }
 
+    // 2. Se for Spoonacular, verifica se os dados já estão salvos no banco
     final ingredientesSalvos = _parseJsonList(widget.ingredientesJson);
     final modoPreparoSalvo = _parseJsonList(widget.modoPreparoJson);
 
     if (ingredientesSalvos.isNotEmpty || modoPreparoSalvo.isNotEmpty) {
+      // Os dados já existem no SQLite, apenas exibe
       setState(() {
         _ingredientes = ingredientesSalvos;
         _modoPreparo = modoPreparoSalvo;
@@ -67,8 +70,10 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
       return;
     }
 
+    // 3. Se os dados não estão salvos, verifica a conexão
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.none) {
+      // Se estiver OFFLINE, exibe a mensagem de erro correta
       setState(() {
         _errorMessage = 'Os detalhes desta receita não estão disponíveis no modo offline.';
         _ingredientes = [];
@@ -78,6 +83,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
       return;
     }
 
+    // 4. Se estiver ONLINE, busca os dados
     setState(() {
       _isLoadingDetails = true;
     });
@@ -94,6 +100,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                 .toList()
             : [];
         _isLoadingDetails = false;
+        // Atualiza o favorito no banco com os novos dados
         _updateFavoriteDataInDb(); 
       });
     } catch (e) {
@@ -106,6 +113,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
     }
   }
 
+  // Função para atualizar o favorito no banco após a busca
   void _updateFavoriteDataInDb() async {
     final provider = context.read<FavoriteRecipesProvider>();
     final isFavorite = provider.favoriteRecipes.any((fav) => fav.externalId == widget.externalId);
@@ -116,8 +124,8 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
         nome: widget.title,
         imagemUrl: widget.imageUrl,
         tempoPreparo: widget.cookTime,
-        ingredientesJson: jsonEncode(_ingredientes), 
-        modoPreparoJson: jsonEncode(_modoPreparo), 
+        ingredientesJson: jsonEncode(_ingredientes), // O novo JSON
+        modoPreparoJson: jsonEncode(_modoPreparo),   // O novo JSON
         origem: widget.origem,
       );
       await provider.addFavorite(updatedFavorite);
@@ -242,7 +250,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
          child: Padding(
            padding: const EdgeInsets.all(40.0),
            child: Text(
-             _errorMessage,
+             _errorMessage, // Exibe a mensagem de erro correta (offline ou geral)
              textAlign: TextAlign.center,
              style: Theme.of(context).textTheme.bodyLarge,
            ),

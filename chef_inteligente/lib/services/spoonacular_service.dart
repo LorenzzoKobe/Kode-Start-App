@@ -37,12 +37,10 @@ class SpoonacularService {
       throw Exception('Erro de conexão: $e'); 
     }
   }
+
   Future<SpoonacularDetail> getRecipeDetails(String recipeId) async {
-
-    String url = '$_baseUrl/$recipeId/information?includeNutrition=false&apiKey=$_apiKey';
-
-    debugPrint('Tentando API Call (Detalhes): $url');
-
+    String url = '$_baseUrl/$recipeId/information?includeNutrition=false'; 
+    
     try {
       final response = await http.get(Uri.parse(url));
 

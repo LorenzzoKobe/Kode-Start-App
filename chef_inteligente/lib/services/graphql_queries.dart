@@ -1,32 +1,43 @@
-// lib/services/graphql_queries.dart
-
-const String getFeaturedRecipesQuery = """
+const String getFilterComponentQuery = """
 query {
-  receitaDestaqueCollection {
+  componenteFiltrosCollection(limit: 1) {
     items {
-      # Mantemos apenas os campos que TEMOS CERTEZA que existem
-      sys {
-        id 
+      titulo
+            filtroCollection(limit: 10) { 
+        items {
+          ... on FiltroPorCategoria { 
+            titulo
+            termoDeBuscaApi
+          }
+        }
       }
-      nomeDaReceita
-      imagemDaReceita {
-        url
-      }
-      
-      # Os campos errados (que eu adivinhei) foram removidos 
-      # para parar o 'Erro ao carregar as receitas.'
     }
   }
 }
 """;
 
-const String getFilterCategoriesQuery = """
+const String getFeaturedCarouselComponentQuery = """
 query {
-  filtroPorCategoriaCollection {
+  componenteCarrosselCollection(limit: 1) {
     items {
       titulo
-      termoDeBuscaApi
+      receitasCollection(limit: 10) {
+        items {
+          ... on ReceitaDestaque { 
+            sys {
+              id
+            }
+            nomeDaReceita
+            imagemDaReceita {
+              url
+            }
+            tempoDePreparo
+            ingredientes
+            modoDePreparo
+          }
+        }
+      }
     }
   }
-}
+} 
 """;

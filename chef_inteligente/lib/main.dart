@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
-
 import 'config/app_theme.dart';
 import 'services/api_keys.dart';
 import 'screens/homeScreen.dart'; 
-import 'screens/favoritesScreen.dart'; // Corrigido para o nome de arquivo que definimos
+import 'screens/favoritesScreen.dart';
 import 'providers/favorite_recipes_provider.dart';
 import 'providers/all_recipes_provider.dart';
 
@@ -64,9 +63,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// ===============================================
-// MyNavigationBar CORRIGIDA (SEM APPBAR)
-// ===============================================
 class MyNavigationBar extends StatefulWidget {
   const MyNavigationBar({super.key});
 
@@ -88,14 +84,10 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
     });
   }
 
-  // A FUNÇÃO _buildAppBar() FOI REMOVIDA
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
-      // A LINHA 'appBar:' FOI REMOVIDA
-      
+
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),

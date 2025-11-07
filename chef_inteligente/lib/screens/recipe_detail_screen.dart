@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/favorite_recipes_provider.dart';
 import 'dart:convert';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import '../../config/app_theme.dart';
 import '../../models/receita_favorita_model.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+
 import '../../services/spoonacular_service.dart'; 
 
 class RecipeDetailScreen extends StatefulWidget {
@@ -35,8 +38,8 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
   
   List<String> _ingredientes = [];
   List<String> _modoPreparo = [];
-  
   bool _isLoadingDetails = false; 
+  String _errorMessage = 'Os detalhes desta receita não estão disponíveis no momento.';
 
   @override
   void initState() {
@@ -45,37 +48,88 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
   }
 
   void _loadRecipeData() async {
+    // 1. Se for Contentful (Lasanha), apenas exibe os dados mockados
     if (widget.origem == 'Contentful') {
       setState(() {
         _ingredientes = _parseJsonList(widget.ingredientesJson);
         _modoPreparo = _parseJsonList(widget.modoPreparoJson);
       });
-    } else {
-      setState(() {
-        _isLoadingDetails = true;
-      });
-      
-      try {
-        final details = await _service.getRecipeDetails(widget.externalId);
+      return;
+    }
 
-        setState(() {
-          _ingredientes = details.extendedIngredients
-              .map((ing) => ing.original)
-              .toList();
-          _modoPreparo = details.analyzedInstructions.isNotEmpty
-              ? details.analyzedInstructions[0].steps
-                  .map((step) => step.step)
-                  .toList()
-              : ['Modo de preparo não disponível.'];
-          _isLoadingDetails = false;
-        });
-      } catch (e) {
-         setState(() {
-           _ingredientes = ['Erro ao carregar ingredientes.'];
-           _modoPreparo = ['Erro ao carregar modo de preparo.'];
-           _isLoadingDetails = false;
-         });
-      }
+    // 2. Se for Spoonacular, verifica se os dados já estão salvos no banco
+    final ingredientesSalvos = _parseJsonList(widget.ingredientesJson);
+    final modoPreparoSalvo = _parseJsonList(widget.modoPreparoJson);
+
+    if (ingredientesSalvos.isNotEmpty || modoPreparoSalvo.isNotEmpty) {
+      // Os dados já existem no SQLite, apenas exibe
+      setState(() {
+        _ingredientes = ingredientesSalvos;
+        _modoPreparo = modoPreparoSalvo;
+      });
+      return;
+    }
+
+    // 3. Se os dados não estão salvos, verifica a conexão
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.none) {
+      // Se estiver OFFLINE, exibe a mensagem de erro correta
+      setState(() {
+        _errorMessage = 'Os detalhes desta receita não estão disponíveis no modo offline.';
+        _ingredientes = [];
+        _modoPreparo = [];
+        _isLoadingDetails = false;
+      });
+      return;
+    }
+
+    // 4. Se estiver ONLINE, busca os dados
+    setState(() {
+      _isLoadingDetails = true;
+    });
+    
+    try {
+      final details = await _service.getRecipeDetails(widget.externalId);
+      setState(() {
+        _ingredientes = details.extendedIngredients
+            .map((ing) => ing.original)
+            .toList();
+        _modoPreparo = details.analyzedInstructions.isNotEmpty
+            ? details.analyzedInstructions[0].steps
+                .map((step) => step.step)
+                .toList()
+            : [];
+        _isLoadingDetails = false;
+        // Atualiza o favorito no banco com os novos dados
+        _updateFavoriteDataInDb(); 
+      });
+    } catch (e) {
+       setState(() {
+         _ingredientes = [];
+         _modoPreparo = [];
+         _errorMessage = 'Erro ao carregar ingredientes: ${e.toString()}';
+         _isLoadingDetails = false;
+       });
+    }
+  }
+
+  // Função para atualizar o favorito no banco após a busca
+  void _updateFavoriteDataInDb() async {
+    final provider = context.read<FavoriteRecipesProvider>();
+    final isFavorite = provider.favoriteRecipes.any((fav) => fav.externalId == widget.externalId);
+
+    if (isFavorite) {
+      final updatedFavorite = ReceitaFavorita(
+        externalId: widget.externalId,
+        nome: widget.title,
+        imagemUrl: widget.imageUrl,
+        tempoPreparo: widget.cookTime,
+        ingredientesJson: jsonEncode(_ingredientes), // O novo JSON
+        modoPreparoJson: jsonEncode(_modoPreparo),   // O novo JSON
+        origem: widget.origem,
+      );
+      await provider.addFavorite(updatedFavorite);
+      debugPrint('Favorito (Spoonacular) atualizado no banco com detalhes completos!');
     }
   }
 
@@ -88,7 +142,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
       return [];
     } catch (e) {
       print('Erro ao decodificar JSON: $jsonString. Erro: $e');
-      return []; // Retorna vazio se o JSON for inválido
+      return [];
     }
   }
 
@@ -127,13 +181,19 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
       backgroundColor: AppTheme.scaffoldBackgroundColor,
       iconTheme: IconThemeData(color: AppTheme.primaryTextColor),
       flexibleSpace: FlexibleSpaceBar(
-        background: Image.network(
-          widget.imageUrl,
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) {
-            return const Center(child: Icon(Icons.broken_image, size: 50));
-          },
-        ),
+        background: CachedNetworkImage(
+            imageUrl: widget.imageUrl,
+            fit: BoxFit.cover,
+            placeholder: (context, url) => Container(
+              color: AppTheme.scaffoldBackgroundColor,
+              child: Center(
+                child: CircularProgressIndicator(color: AppTheme.primaryTextColor),
+              ),
+            ),
+            errorWidget: (context, url, error) => const Center(
+              child: Icon(Icons.broken_image, size: 50, color: Colors.grey),
+            ),
+          ),
       ),
       actions: [
         Consumer<FavoriteRecipesProvider>(
@@ -190,7 +250,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
          child: Padding(
            padding: const EdgeInsets.all(40.0),
            child: Text(
-             'Os detalhes desta receita não estão disponíveis no momento.',
+             _errorMessage, // Exibe a mensagem de erro correta (offline ou geral)
              textAlign: TextAlign.center,
              style: Theme.of(context).textTheme.bodyLarge,
            ),
@@ -228,7 +288,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                           );
                         },
                       )
-                    : const Center(child: Text('Ingredientes não disponíveis.')),
+                    : Center(child: Text(_errorMessage)),
                 
                 hasSteps
                     ? ListView.builder(
@@ -245,7 +305,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                           );
                         },
                       )
-                    : const Center(child: Text('Modo de preparo não disponível.')),
+                    : Center(child: Text(_errorMessage)),
               ],
             ),
           ),

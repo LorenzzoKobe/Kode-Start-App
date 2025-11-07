@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'api_keys.dart';
-import '../models/spoonacular_detail_model.dart';
+import '../models/spoonacular_detail_model.dart'; 
 
 class SpoonacularService {
   static const String _baseUrl = 'https://api.spoonacular.com/recipes';
@@ -37,12 +37,9 @@ class SpoonacularService {
       throw Exception('Erro de conexão: $e'); 
     }
   }
+
   Future<SpoonacularDetail> getRecipeDetails(String recipeId) async {
-
-    String url = '$_baseUrl/$recipeId/information?includeNutrition=false&apiKey=$_apiKey';
-
-    debugPrint('Tentando API Call (Detalhes): $url');
-
+    String url = '$_baseUrl/$recipeId/information?includeNutrition=false&apiKey=$_apiKey';    
     try {
       final response = await http.get(Uri.parse(url));
 

@@ -1,4 +1,3 @@
-// lib/models/spoonacular_detail_model.dart
 
 class SpoonacularDetail {
   final List<Ingredient> extendedIngredients;
@@ -28,7 +27,7 @@ class SpoonacularDetail {
 }
 
 class Ingredient {
-  final String original; // "1 cup sugar"
+  final String original;
 
   Ingredient({required this.original});
 
